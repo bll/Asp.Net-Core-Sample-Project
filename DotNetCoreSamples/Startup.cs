@@ -7,15 +7,31 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using DotNetCoreSamples.Services;
+using DotNetCoreSamples.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace DotNetCoreSamples
 {
     public class Startup
     {
+        private readonly IConfiguration _config;
+
+        public Startup(IConfiguration config)
+        {
+            _config = config;
+        }
+
+
         // Bu yöntem çalışma zamanı tarafından çağrılır. Kapta hizmetler eklemek için bu yöntemi kullanın.
         // Uygulamanızı yapılandırma hakkında daha fazla bilgi için https://go.microsoft.com/fwlink/?LinkID=398940 adresini ziyaret edin.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<MyDbContext>(cfg =>
+            {
+                cfg.UseSqlServer(_config.GetConnectionString("MyDbConnectionString"));
+            });
+
             services.AddTransient<IMailService, NullMailService>(); //AddTransient sürekli kullanılan bir servis olmayacağı için tanımladım. Aksi durumda AddSingleton tanımlanabilirdi.
             services.AddMvc();
         }
