@@ -12,12 +12,14 @@ namespace DotNetCoreSamples.Controllers
     public class AppController : Controller
     {
         private readonly IMailService _mailService;
-        private readonly MyDbContext _context;
+        // private readonly MyDbContext _context;
+        private readonly IRepository _repository;
 
-        public AppController(IMailService mailService, MyDbContext context)
+        public AppController(IMailService mailService, MyDbContext context, IRepository repository)
         {
             _mailService = mailService;
-            _context = context;
+            // _context = context;
+            _repository = repository;
         }
         public IActionResult Index()
         {
@@ -57,9 +59,11 @@ namespace DotNetCoreSamples.Controllers
             //var result = _context.Products
             //    .OrderBy(p => p.Category).ToList();
 
-            var result = from p in _context.Products
-                         orderby p.Category
-                         select p;
+            //var result = from p in _context.Products
+            //             orderby p.Category
+            //             select p;
+
+            var result = _repository.GetAllProduct();
 
             return View(result.ToList());
         }

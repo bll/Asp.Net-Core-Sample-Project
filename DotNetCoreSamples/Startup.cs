@@ -37,6 +37,7 @@ namespace DotNetCoreSamples
             //seed data
             services.AddTransient<MyDbSeeder>();
 
+            services.AddScoped<IRepository, MyRepository>();
             services.AddMvc();
         }
 
