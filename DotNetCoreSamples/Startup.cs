@@ -32,7 +32,11 @@ namespace DotNetCoreSamples
                 cfg.UseSqlServer(_config.GetConnectionString("MyDbConnectionString"));
             });
 
-            services.AddTransient<IMailService, NullMailService>(); //AddTransient sürekli kullanılan bir servis olmayacağı için tanımladım. Aksi durumda AddSingleton tanımlanabilirdi.
+            services.AddTransient<IMailService, NullMailService>(); //IMailService sürekli kullanılan bir servis olmayacağı için tanımladım AddTransient tanımladım. Aksi durumda AddSingleton tanımlanabilirdi.
+
+            //seed data
+            services.AddTransient<MyDbSeeder>();
+
             services.AddMvc();
         }
 
@@ -62,6 +66,18 @@ namespace DotNetCoreSamples
                 cfg.MapRoute("Default", "{controller}/{action}/{id?}",
                     new { controller = "App", Action = "Index" });
             });
+
+
+            // seed dataları sadece geliştirme modunda dahil edilsin
+            if (env.IsDevelopment())
+            {
+                //sadece using bloğu süresince nesneyi oluştursun
+                using (var scope = app.ApplicationServices.CreateScope())
+                {
+                    var seeder = scope.ServiceProvider.GetService<MyDbSeeder>();//ServiceProvider hizmet örneği oluşturan bir nesnedir
+                    seeder.Seed();
+                }
+            }
         }
     }
 }
