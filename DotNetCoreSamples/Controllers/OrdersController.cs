@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using DotNetCoreSamples.Data;
+using DotNetCoreSamples.Data.Entities;
+using DotNetCoreSamples.ViewModels;
 
 namespace DotNetCoreSamples.Controllers
 {
@@ -55,6 +57,56 @@ namespace DotNetCoreSamples.Controllers
 
             }
 
+        }
+
+        [HttpPost]
+        public IActionResult Post([FromBody]OrderViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var newOrder = new Order()
+                    {
+                        OrderDate = model.OrderDate,
+                        OrderNumber = model.OrderNumber,
+                        Id=model.OrderId
+                    };
+
+                    if (newOrder.OrderDate==DateTime.MinValue)
+                    {
+                        newOrder.OrderDate=DateTime.Now;
+                        
+                    }
+
+                    _repository.AddEntity(newOrder);
+
+
+                    if (_repository.SaveChanges())
+                    {
+                        //view modeli geri dönmek için
+
+                        var vm = new OrderViewModel()
+                        {
+                            OrderId = newOrder.Id,
+                            OrderDate = newOrder.OrderDate,
+                            OrderNumber = newOrder.OrderNumber
+                        };
+
+                        return Created($"/api/orders/{vm.OrderId}", vm);
+                    }
+                }
+                else
+                {
+                    return BadRequest(ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Sipariş kaydetme sırasında bir hata oluştu: {ex}");
+            }
+
+            return BadRequest("Sipariş kaydetme işlemi sırasında bir hata oluştu");
         }
     }
 }

@@ -13,5 +13,6 @@ namespace DotNetCoreSamples.Data
 
         bool SaveChanges();
 
+        void AddEntity(object model);
     }
 }
