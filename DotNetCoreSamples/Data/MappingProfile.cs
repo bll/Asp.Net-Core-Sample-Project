@@ -16,6 +16,9 @@ namespace DotNetCoreSamples.Data
                 .ForMember(o => o.OrderId, ex => ex.MapFrom(o => o.Id))
                 .ReverseMap();
             //ReverseMap bazı durumlarda order dan OrderViewModel e map işlemi yaparken bazı durumlarda da tam tersi map yapabiliriz bunun için ReverseMap kullanabiliriz.
+
+            CreateMap<OrderItem, OrderItemViewModel>().ReverseMap();
+
         }
     }
 }
