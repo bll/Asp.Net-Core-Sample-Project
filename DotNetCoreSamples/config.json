@@ -1,5 +1,11 @@
 ﻿{
   "ConnectionStrings": {
     "MyDbConnectionString": "server=DESKTOP-4I4MLAS\\MSSQLSERVER2014;Database=AspNetCoreSapmle;Integrated Security=true;MultipleActiveResultSets=true"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning"
+    }
   }
 }

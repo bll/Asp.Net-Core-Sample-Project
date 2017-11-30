@@ -10,6 +10,7 @@ using DotNetCoreSamples.Services;
 using DotNetCoreSamples.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 namespace DotNetCoreSamples
 {
@@ -38,7 +39,11 @@ namespace DotNetCoreSamples
             services.AddTransient<MyDbSeeder>();
 
             services.AddScoped<IRepository, MyRepository>();
-            services.AddMvc();
+            services.AddMvc()
+               
+                // Api içinde ilişkili tablolarda verileri serileştiremeyebiliyor (kendi kendini referanslayan bir koleksiyon olduğundan dolayı).  
+                //Bazı tarayıcılarda  çalışabilir (chrome) ama postmanda çalışmadı garantiye almak için bu durumu devre dışı bırakıyorum
+                .AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore); 
         }
 
         // Bu yöntem çalışma zamanı tarafından çağrılır. HTTP isteği bağlantı hattını yapılandırmak için bu yöntemi kullanın.
