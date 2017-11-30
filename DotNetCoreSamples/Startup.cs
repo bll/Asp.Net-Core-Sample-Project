@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -32,6 +33,8 @@ namespace DotNetCoreSamples
             {
                 cfg.UseSqlServer(_config.GetConnectionString("MyDbConnectionString"));
             });
+
+            services.AddAutoMapper();
 
             services.AddTransient<IMailService, NullMailService>(); //IMailService sürekli kullanılan bir servis olmayacağı için tanımladım AddTransient tanımladım. Aksi durumda AddSingleton tanımlanabilirdi.
 

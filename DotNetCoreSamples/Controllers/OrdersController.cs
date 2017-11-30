@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using DotNetCoreSamples.Data;
@@ -15,10 +17,13 @@ namespace DotNetCoreSamples.Controllers
     {
         private readonly IRepository _repository;
         private readonly ILogger<OrdersController> _logger;
-        public OrdersController(IRepository repository, ILogger<OrdersController> logger)
+        private readonly IMapper _mapper;
+
+        public OrdersController(IRepository repository, ILogger<OrdersController> logger, IMapper mapper)
         {
             _repository = repository;
             _logger = logger;
+            _mapper = mapper;
         }
 
 
@@ -27,7 +32,7 @@ namespace DotNetCoreSamples.Controllers
         {
             try
             {
-                return Ok(_repository.GetAllOrders());
+                return Ok(_mapper.Map<IEnumerable<Order>, IEnumerable<OrderViewModel>>(_repository.GetAllOrders()));
             }
             catch (Exception ex)
             {
@@ -46,7 +51,7 @@ namespace DotNetCoreSamples.Controllers
 
                 if (order != null)
                 {
-                    return Ok(order);
+                    return Ok(_mapper.Map<Order, OrderViewModel>(order));
                 }
                 return NotFound();
             }
@@ -66,17 +71,13 @@ namespace DotNetCoreSamples.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var newOrder = new Order()
-                    {
-                        OrderDate = model.OrderDate,
-                        OrderNumber = model.OrderNumber,
-                        Id=model.OrderId
-                    };
+                    var newOrder = _mapper.Map<OrderViewModel, Order>(model);
 
-                    if (newOrder.OrderDate==DateTime.MinValue)
+
+                    if (newOrder.OrderDate == DateTime.MinValue)
                     {
-                        newOrder.OrderDate=DateTime.Now;
-                        
+                        newOrder.OrderDate = DateTime.Now;
+
                     }
 
                     _repository.AddEntity(newOrder);
@@ -84,16 +85,7 @@ namespace DotNetCoreSamples.Controllers
 
                     if (_repository.SaveChanges())
                     {
-                        //view modeli geri dönmek için
-
-                        var vm = new OrderViewModel()
-                        {
-                            OrderId = newOrder.Id,
-                            OrderDate = newOrder.OrderDate,
-                            OrderNumber = newOrder.OrderNumber
-                        };
-
-                        return Created($"/api/orders/{vm.OrderId}", vm);
+                        return Created($"/api/orders/{newOrder.Id}", _mapper.Map<Order, OrderViewModel>(newOrder));
                     }
                 }
                 else
