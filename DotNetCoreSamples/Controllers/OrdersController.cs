@@ -9,10 +9,13 @@ using Microsoft.Extensions.Logging;
 using DotNetCoreSamples.Data;
 using DotNetCoreSamples.Data.Entities;
 using DotNetCoreSamples.ViewModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DotNetCoreSamples.Controllers
 {
     [Route("api/[Controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class OrdersController : Controller
     {
         private readonly IRepository _repository;

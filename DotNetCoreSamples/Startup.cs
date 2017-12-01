@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
 namespace DotNetCoreSamples
@@ -40,6 +42,18 @@ namespace DotNetCoreSamples
             })
             .AddEntityFrameworkStores<MyDbContext>(); // burada identity verisini farklı bir veritabanıdan tutmak istersek o context i verebiliriz
 
+            services.AddAuthentication()
+                .AddCookie() // web için
+                .AddJwtBearer(cfg =>
+                {
+                    cfg.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidIssuer = _config["Tokens:Issuer"],
+                        ValidAudience = _config["Token:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]))
+                    };
+
+                });// api token için
 
             services.AddDbContext<MyDbContext>(cfg =>
             {
