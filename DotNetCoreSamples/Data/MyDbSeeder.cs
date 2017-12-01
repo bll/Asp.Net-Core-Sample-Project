@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace DotNetCoreSamples.Data
 {
@@ -13,17 +14,39 @@ namespace DotNetCoreSamples.Data
     {
         private readonly MyDbContext _context;
         private readonly IHostingEnvironment _hosting;
+        private readonly UserManager<StoreUser> _userManager;
 
-        public MyDbSeeder(MyDbContext context, IHostingEnvironment hosting)
+        public MyDbSeeder(MyDbContext context, IHostingEnvironment hosting,
+            UserManager<StoreUser> userManager)
         {
             _context = context;
             _hosting = hosting; // runtime da proje kök klasörüne erişmek için
+            _userManager = userManager;
         }
 
-        public void Seed()
+        public async Task Seed()
         {
             _context.Database.EnsureCreated(); // veritabanının yaratıldığından emin olmak istiyorum
 
+            var user = await _userManager.FindByEmailAsync("bilal@bilal.com");
+
+            if (user == null)
+            {
+                user = new StoreUser()
+                {
+                    FirstName = "Bilal",
+                    LastName = "Yanık",
+                    UserName = "bll",
+                    Email = "bilal@bilal.com"
+                };
+
+                var result = await _userManager.CreateAsync(user, "P@ssw0rd!");
+
+                if (result != IdentityResult.Success)
+                {
+                   throw new InvalidOperationException("Default user oluşturulamadı");
+                }
+            }
             if (!_context.Products.Any())
             {
                 //product datalarını art.json dosyasından çekeceğim
@@ -37,6 +60,7 @@ namespace DotNetCoreSamples.Data
                 {
                     OrderDate = DateTime.Now,
                     OrderNumber = "12345",
+                    User = user,
                     Items = new List<OrderItem>()
                     {
                         new OrderItem()

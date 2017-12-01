@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using DotNetCoreSamples.Services;
 using DotNetCoreSamples.Data;
+using DotNetCoreSamples.Data.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -29,6 +31,13 @@ namespace DotNetCoreSamples
         // Uygulamanızı yapılandırma hakkında daha fazla bilgi için https://go.microsoft.com/fwlink/?LinkID=398940 adresini ziyaret edin.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddIdentity<StoreUser, IdentityRole>(cfg =>
+            {
+                cfg.User.RequireUniqueEmail = true;
+            })
+            .AddEntityFrameworkStores<MyDbContext>(); // burada identity verisini farklı bir veritabanıdan tutmak istersek o context i verebiliriz
+
+
             services.AddDbContext<MyDbContext>(cfg =>
             {
                 cfg.UseSqlServer(_config.GetConnectionString("MyDbConnectionString"));
@@ -43,10 +52,10 @@ namespace DotNetCoreSamples
 
             services.AddScoped<IRepository, MyRepository>();
             services.AddMvc()
-               
+
                 // Api içinde ilişkili tablolarda verileri serileştiremeyebiliyor (kendi kendini referanslayan bir koleksiyon olduğundan dolayı).  
                 //Bazı tarayıcılarda  çalışabilir (chrome) ama postmanda çalışmadı garantiye almak için bu durumu devre dışı bırakıyorum
-                .AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore); 
+                .AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
         }
 
         // Bu yöntem çalışma zamanı tarafından çağrılır. HTTP isteği bağlantı hattını yapılandırmak için bu yöntemi kullanın.
@@ -70,6 +79,8 @@ namespace DotNetCoreSamples
             // app.UseDefaultFiles();
             app.UseStaticFiles();
 
+            app.UseAuthentication(); // bu middleware mvc den önce gelmeli aksi taktirde mvc kimlik doğrulamasını kullanamaz
+
             app.UseMvc(cfg =>
             {
                 cfg.MapRoute("Default", "{controller}/{action}/{id?}",
@@ -84,7 +95,10 @@ namespace DotNetCoreSamples
                 using (var scope = app.ApplicationServices.CreateScope())
                 {
                     var seeder = scope.ServiceProvider.GetService<MyDbSeeder>();//ServiceProvider hizmet örneği oluşturan bir nesnedir
-                    seeder.Seed();
+                    seeder.Seed().Wait();
+                    // FindByEmailAsync için metodu asenkron yaptım çünkü identity tüm find metodları asenkron, burada senkronize edebilmek için wait kullandım.
+                    // Seed i arayacak ve tamamlanıncaya kadar bekleyecek uygulama birkez çalıştırılacağından bir sıkıntı yaratmayacaktır
+                    // tüm Configure sınıfını asenkrona çevirmememin sebebi: Bu sürümde asenkron bu yapı için iyi çalışmıyordu
                 }
             }
         }

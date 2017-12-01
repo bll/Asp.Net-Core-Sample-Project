@@ -4,10 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace DotNetCoreSamples.Data
 {
-    public class MyDbContext : DbContext
+    public class MyDbContext : IdentityDbContext<StoreUser>
     {
         public MyDbContext(DbContextOptions<MyDbContext> options) : base(options)
         {
