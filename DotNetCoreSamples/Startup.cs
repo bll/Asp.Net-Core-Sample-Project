@@ -11,6 +11,7 @@ using DotNetCoreSamples.Services;
 using DotNetCoreSamples.Data;
 using DotNetCoreSamples.Data.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -20,10 +21,12 @@ namespace DotNetCoreSamples
     public class Startup
     {
         private readonly IConfiguration _config;
+        private readonly IHostingEnvironment _env;
 
-        public Startup(IConfiguration config)
+        public Startup(IConfiguration config, IHostingEnvironment env)
         {
             _config = config;
+            _env = env;
         }
 
 
@@ -51,7 +54,16 @@ namespace DotNetCoreSamples
             services.AddTransient<MyDbSeeder>();
 
             services.AddScoped<IRepository, MyRepository>();
-            services.AddMvc()
+
+            services.AddMvc(
+                //opt =>
+                //{
+                //    if (_env.IsProduction())
+                //    {
+                //        opt.Filters.Add(new RequireHttpsAttribute());
+                //    }
+                //}
+                )
 
                 // Api içinde ilişkili tablolarda verileri serileştiremeyebiliyor (kendi kendini referanslayan bir koleksiyon olduğundan dolayı).  
                 //Bazı tarayıcılarda  çalışabilir (chrome) ama postmanda çalışmadı garantiye almak için bu durumu devre dışı bırakıyorum
