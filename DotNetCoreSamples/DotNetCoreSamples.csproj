@@ -32,7 +32,9 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\app\shared\dataService.ts" />
+    <TypeScriptCompile Include="ClientApp\app\shared\order.ts" />
     <TypeScriptCompile Include="ClientApp\app\shared\product.ts" />
+    <TypeScriptCompile Include="ClientApp\app\shop\cart.component.html" />
     <TypeScriptCompile Include="ClientApp\app\shop\productList.component.ts" />
     <TypeScriptCompile Include="wwwroot\ts\bilal_test.ts" />
   </ItemGroup>

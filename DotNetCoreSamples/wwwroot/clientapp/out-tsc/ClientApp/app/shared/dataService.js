@@ -12,9 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var http_1 = require("@angular/http");
 var core_1 = require("@angular/core");
 require("rxjs/add/operator/map");
+var order_1 = require("./order");
 var DataService = (function () {
     function DataService(http) {
         this.http = http;
+        this.order = new order_1.Order();
         this.products = [];
     }
     DataService.prototype.loadProducts = function () {
@@ -22,6 +24,24 @@ var DataService = (function () {
         //return this.http.get("/api/products").subscribe();
         return this.http.get("/api/products")
             .map(function (result) { return _this.products = result.json(); });
+    };
+    DataService.prototype.AddToOrder = function (product) {
+        var item = this.order.items.find(function (i) { return i.productId == product.id; });
+        if (item) {
+            item.quantity++;
+        }
+        else {
+            item = new order_1.OrderItem();
+            item.productId = product.id;
+            item.productArtist = product.artist;
+            item.productCategory = product.category;
+            item.productArtId = product.artId;
+            item.productTitle = product.title;
+            item.productSize = product.size;
+            item.unitPrice = product.price;
+            item.quantity = 1;
+            this.order.items.push(item);
+        }
     };
     return DataService;
 }());
