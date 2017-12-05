@@ -14,16 +14,20 @@ var dataService_1 = require("../shared/dataService");
 var ProductList = (function () {
     function ProductList(data) {
         this.data = data;
-        this.products = [];
         this.products = data.products;
     }
+    ProductList.prototype.ngOnInit = function () {
+        var _this = this;
+        this.data.loadProducts()
+            .subscribe(function () { return _this.products = _this.data.products; });
+    };
     return ProductList;
 }());
 ProductList = __decorate([
     core_1.Component({
         selector: "product-list",
         templateUrl: "productList.component.html",
-        styleUrls: []
+        styleUrls: ["productList.componetn.css"]
     }),
     __metadata("design:paramtypes", [dataService_1.DataService])
 ], ProductList);

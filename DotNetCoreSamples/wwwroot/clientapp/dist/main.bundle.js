@@ -62,9 +62,10 @@ var AppComponent = (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__("../../../platform-browser/esm5/platform-browser.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__app_component__ = __webpack_require__("../../../../../ClientApp/app/app.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__shop_productList_component__ = __webpack_require__("../../../../../ClientApp/app/shop/productList.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__shared_dataService__ = __webpack_require__("../../../../../ClientApp/app/shared/dataService.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__("../../../http/esm5/http.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_component__ = __webpack_require__("../../../../../ClientApp/app/app.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__shop_productList_component__ = __webpack_require__("../../../../../ClientApp/app/shop/productList.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__shared_dataService__ = __webpack_require__("../../../../../ClientApp/app/shared/dataService.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -76,22 +77,24 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
+
 var AppModule = (function () {
     function AppModule() {
     }
     AppModule = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["E" /* NgModule */])({
             declarations: [
-                __WEBPACK_IMPORTED_MODULE_2__app_component__["a" /* AppComponent */],
-                __WEBPACK_IMPORTED_MODULE_3__shop_productList_component__["a" /* ProductList */]
+                __WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* AppComponent */],
+                __WEBPACK_IMPORTED_MODULE_4__shop_productList_component__["a" /* ProductList */]
             ],
             imports: [
-                __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */]
+                __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
+                __WEBPACK_IMPORTED_MODULE_2__angular_http__["b" /* HttpModule */]
             ],
             providers: [
-                __WEBPACK_IMPORTED_MODULE_4__shared_dataService__["a" /* DataService */]
+                __WEBPACK_IMPORTED_MODULE_5__shared_dataService__["a" /* DataService */]
             ],
-            bootstrap: [__WEBPACK_IMPORTED_MODULE_2__app_component__["a" /* AppComponent */]]
+            bootstrap: [__WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* AppComponent */]]
         })
     ], AppModule);
     return AppModule;
@@ -106,17 +109,36 @@ var AppModule = (function () {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DataService; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_http__ = __webpack_require__("../../../http/esm5/http.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/_esm5/add/operator/map.js");
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
 var DataService = (function () {
-    function DataService() {
-        this.products = [{
-                title: "First product",
-                price: 19.90
-            },
-            {
-                title: "Second  product",
-                price: 9.90
-            }];
+    function DataService(http) {
+        this.http = http;
+        this.products = [];
     }
+    DataService.prototype.loadProducts = function () {
+        var _this = this;
+        //return this.http.get("/api/products").subscribe();
+        return this.http.get("/api/products")
+            .map(function (result) { return _this.products = result.json(); });
+    };
+    DataService = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["w" /* Injectable */])(),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_http__["a" /* Http */]])
+    ], DataService);
     return DataService;
 }());
 
@@ -127,7 +149,7 @@ var DataService = (function () {
 /***/ "../../../../../ClientApp/app/shop/productList.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"row\">\r\n    <ul>\r\n        <li *ngFor=\"let p of products\">{{p.title}} : {{p.price | currency:\"USD\":true}}</li>\r\n    </ul>\r\n</div>"
+module.exports = "<div class=\"row\">\r\n    <div class=\"product-info col-md-4 well well-sm\" *ngFor=\"let p of products\">\r\n        <img src=\"/img/{{p.artId}}.jpg\" class=\"img-responsive\" [alt]=\"p.title\" />\r\n        <div class=\"product-name\">{{p.category}} - {{p.size}}</div>\r\n\r\n        <div><strong> Price: </strong>{{p.price | currency:\"USD\":true}}</div>\r\n        <div><strong> Artist:</strong> {{p.artist}}</div>\r\n        <div><strong> Title: </strong>{{p.title}}</div>\r\n        <div><strong> Description:</strong> {{p.artDescription}}</div>\r\n\r\n\r\n        <button id=\"buyButton\" class=\"btn btn-success btn-sm pull-right\">Buy</button>\r\n    </div>\r\n\r\n</div>\r\n"
 
 /***/ }),
 
@@ -152,14 +174,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var ProductList = (function () {
     function ProductList(data) {
         this.data = data;
-        this.products = [];
         this.products = data.products;
     }
+    ProductList.prototype.ngOnInit = function () {
+        var _this = this;
+        this.data.loadProducts()
+            .subscribe(function () { return _this.products = _this.data.products; });
+    };
     ProductList = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
             selector: "product-list",
             template: __webpack_require__("../../../../../ClientApp/app/shop/productList.component.html"),
-            styleUrls: []
+            styles: [__webpack_require__("../../../../../ClientApp/app/shop/productList.componetn.css")]
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__shared_dataService__["a" /* DataService */]])
     ], ProductList);
@@ -167,6 +193,24 @@ var ProductList = (function () {
 }());
 
 
+
+/***/ }),
+
+/***/ "../../../../../ClientApp/app/shop/productList.componetn.css":
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__("../../node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, ".product-info img {\r\n    max-width: 100px;\r\n    float:left;\r\n    margin: 0 2px;\r\n    border:solid 1px black;\r\n}\r\n\r\n.product-info .product-name{\r\n    font-size: large;\r\n    font-weight: bold;\r\n}", ""]);
+
+// exports
+
+
+/*** EXPORTS FROM exports-loader ***/
+module.exports = module.exports.toString();
 
 /***/ }),
 
