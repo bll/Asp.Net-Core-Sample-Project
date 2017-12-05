@@ -92,10 +92,8 @@ namespace DotNetCoreSamples.Controllers
                         var claims = new[]
                         {
                             new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                            new Claim(JwtRegisteredClaimNames.Jti,
-                                Guid.NewGuid().ToString()), // jti benzersiz bir string değerdir, 
-                            new Claim(JwtRegisteredClaimNames.UniqueName,
-                                user.Email) // kullanıcı adınıda gönderebilriiz önemli olan unique bir değer olması
+                            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // jti benzersiz bir string değerdir, 
+                            new Claim(JwtRegisteredClaimNames.UniqueName,user.UserName) // kullanıcı adınıda gönderebilriiz önemli olan unique bir değer olması
 
                         };
 
@@ -106,7 +104,7 @@ namespace DotNetCoreSamples.Controllers
                         //tokeni oluşturuyorum
                         var token = new JwtSecurityToken(
                             _config["Tokens:Issuer"],
-                            _config["Token:Audience"],
+                            _config["Tokens:Audience"],
                             claims,
                             expires: DateTime.UtcNow.AddMinutes(20),
                             signingCredentials: creds

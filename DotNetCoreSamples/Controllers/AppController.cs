@@ -58,16 +58,7 @@ namespace DotNetCoreSamples.Controllers
         [Authorize]
         public IActionResult Shop()
         {
-            //var result = _context.Products
-            //    .OrderBy(p => p.Category).ToList();
-
-            //var result = from p in _context.Products
-            //             orderby p.Category
-            //             select p;
-
-            var result = _repository.GetAllProduct();
-
-            return View(result.ToList());
+            return View();
         }
     }
 }

@@ -11,6 +11,7 @@ using DotNetCoreSamples.Data.Entities;
 using DotNetCoreSamples.ViewModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace DotNetCoreSamples.Controllers
 {
@@ -21,21 +22,27 @@ namespace DotNetCoreSamples.Controllers
         private readonly IRepository _repository;
         private readonly ILogger<OrdersController> _logger;
         private readonly IMapper _mapper;
+        private readonly UserManager<StoreUser> _userManager;
 
-        public OrdersController(IRepository repository, ILogger<OrdersController> logger, IMapper mapper)
+        public OrdersController(IRepository repository, ILogger<OrdersController> logger,
+            IMapper mapper,
+            UserManager<StoreUser> userManager)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
 
         [HttpGet]
         public IActionResult Get(bool includeItems = true)
         {
+            var username = User.Identity.Name;
+
             try
             {
-                var results = _repository.GetAllOrders(includeItems);
+                var results = _repository.GetAllOrdersByUser(username, includeItems);
                 return Ok(_mapper.Map<IEnumerable<Order>, IEnumerable<OrderViewModel>>(results));
             }
             catch (Exception ex)
@@ -51,7 +58,7 @@ namespace DotNetCoreSamples.Controllers
         {
             try
             {
-                var order = _repository.GetOrderById(id);
+                var order = _repository.GetOrderById(User.Identity.Name, id);
 
                 if (order != null)
                 {
@@ -69,7 +76,7 @@ namespace DotNetCoreSamples.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody]OrderViewModel model)
+        public async Task<IActionResult> Post([FromBody]OrderViewModel model)
         {
             try
             {
@@ -84,6 +91,9 @@ namespace DotNetCoreSamples.Controllers
 
                     }
 
+                    var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+
+                    newOrder.User = currentUser;
                     _repository.AddEntity(newOrder);
 
 

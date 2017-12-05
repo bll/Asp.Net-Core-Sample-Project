@@ -1,0 +1,1 @@
+{"version":3,"file":"dataService.js","sourceRoot":"","sources":["../../../../../../ClientApp/app/shared/dataService.ts"],"names":[],"mappings":";;AAAA;IAAA;QACW,aAAQ,GAAG,CAAC;gBACf,KAAK,EAAE,eAAe;gBACtB,KAAK,EAAE,KAAK;aACf;YACD;gBACI,KAAK,EAAE,iBAAiB;gBACxB,KAAK,EAAE,IAAI;aACd,CAAC,CAAC;IACP,CAAC;IAAD,kBAAC;AAAD,CAAC,AATD,IASC;AATY,kCAAW"}

@@ -6,12 +6,16 @@ using AutoMapper;
 using DotNetCoreSamples.Data;
 using DotNetCoreSamples.Data.Entities;
 using DotNetCoreSamples.ViewModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace DotNetCoreSamples.Controllers
 {
     [Route("/api/orders/{orderid}/items")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
     public class OrderItemsController : Controller
     {
         private readonly IRepository _repository;
@@ -29,7 +33,7 @@ namespace DotNetCoreSamples.Controllers
         [HttpGet]
         public IActionResult Get(int orderId)
         {
-            var order = _repository.GetOrderById(orderId);
+            var order = _repository.GetOrderById(User.Identity.Name, orderId);
 
             if (order != null)
             {
@@ -42,7 +46,7 @@ namespace DotNetCoreSamples.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int orderId, int id)
         {
-            var order = _repository.GetOrderById(orderId);
+            var order = _repository.GetOrderById(User.Identity.Name, orderId);
 
             if (order != null)
             {

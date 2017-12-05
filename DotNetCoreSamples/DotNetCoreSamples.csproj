@@ -2,7 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\ts\bilal_test.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ClientApp\app\shared\dataService.ts" />
+    <None Remove="ClientApp\app\shop\productList.component.ts" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="wwwroot\index.html" />
@@ -17,6 +27,12 @@
 
   <ItemGroup>
    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.Dotnet" Version="2.0.1"></DotNetCliToolReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\app\shared\dataService.ts" />
+    <TypeScriptCompile Include="ClientApp\app\shop\productList.component.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\bilal_test.ts" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties config_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>

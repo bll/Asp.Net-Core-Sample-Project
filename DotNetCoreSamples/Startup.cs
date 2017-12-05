@@ -49,7 +49,7 @@ namespace DotNetCoreSamples
                     cfg.TokenValidationParameters = new TokenValidationParameters()
                     {
                         ValidIssuer = _config["Tokens:Issuer"],
-                        ValidAudience = _config["Token:Audience"],
+                        ValidAudience = _config["Tokens:Audience"],
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]))
                     };
 
