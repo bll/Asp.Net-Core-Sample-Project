@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var _ = require("lodash");
+var _ = require("lodash"); // sum vb metodların hazır bulunduğu kütüphane _ ile kullanmak zorunlu :)
 var Order = (function () {
     function Order() {
         this.orderDate = new Date();
