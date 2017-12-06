@@ -33,6 +33,30 @@ var DataService = (function () {
         enumerable: true,
         configurable: true
     });
+    DataService.prototype.login = function (creds) {
+        var _this = this;
+        return this.http.post("/account/createtoken", creds)
+            .map(function (response) {
+            var tokenInfo = response.json();
+            _this.token = tokenInfo.token;
+            _this.tokenExpiration = tokenInfo.expiration;
+            return true;
+        });
+    };
+    DataService.prototype.checkout = function () {
+        var _this = this;
+        // sipariş no biz veriyordu sunucu taraflı bir hata vermemesi için sipariş noyu gönderdim.
+        if (!this.order.orderNumber) {
+            this.order.orderNumber = this.order.orderDate.getFullYear().toString() + this.order.orderDate.getTime().toString();
+        }
+        return this.http.post("/api/orders", this.order, {
+            headers: new http_1.Headers({ "Authorization": "Bearer " + this.token })
+        })
+            .map(function (response) {
+            _this.order = new order_1.Order();
+            return true;
+        });
+    };
     DataService.prototype.AddToOrder = function (product) {
         var item = this.order.items.find(function (i) { return i.productId == product.id; });
         if (item) {

@@ -19,6 +19,17 @@ namespace DotNetCoreSamples.Data
             _logger = logger;
         }
 
+        public void AddOrder(Order newOrder)
+        {
+            //angular'dan gelen siparişleri gez ve ürünId nesnelerini ürünler listesinden çekip sipariş ürünü olarak ekle ve siparişi kaydet
+            foreach (var item in newOrder.Items)
+            {
+                item.Product = _ctx.Products.Find(item.Product.Id);
+            }
+
+            AddEntity(newOrder);
+        }
+
         public IEnumerable<Order> GetAllOrders(bool includeItems)
         {
             if (includeItems)
@@ -95,5 +106,6 @@ namespace DotNetCoreSamples.Data
             _ctx.Add(model);
         }
 
+      
     }
 }

@@ -10,9 +10,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
+var dataService_1 = require("../shared/dataService");
+var router_1 = require("@angular/router");
 var Login = (function () {
-    function Login() {
+    function Login(data, router) {
+        this.data = data;
+        this.router = router;
+        this.errorMessage = "";
+        this.creds = {
+            username: "",
+            password: ""
+        };
     }
+    Login.prototype.onLogin = function () {
+        // login servisini çağıracak metod
+        var _this = this;
+        this.data.login(this.creds)
+            .subscribe(function (success) {
+            if (success) {
+                if (_this.data.order.items.length == 0) {
+                    _this.router.navigate([""]);
+                }
+                else {
+                    _this.router.navigate(["checkout"]);
+                }
+            }
+        }, function (err) { return _this.errorMessage = "Failed to login"; });
+    };
     return Login;
 }());
 Login = __decorate([
@@ -20,7 +44,7 @@ Login = __decorate([
         selector: "login",
         templateUrl: "login.component.html",
     }),
-    __metadata("design:paramtypes", [])
+    __metadata("design:paramtypes", [dataService_1.DataService, router_1.Router])
 ], Login);
 exports.Login = Login;
 //# sourceMappingURL=login.component.js.map
