@@ -22,6 +22,11 @@ var Login = (function () {
             password: ""
         };
     }
+    Login.prototype.ngOnInit = function () {
+        if (!this.data.loginRequired) {
+            this.router.navigate(["/"]);
+        }
+    };
     Login.prototype.onLogin = function () {
         // login servisini çağıracak metod
         var _this = this;

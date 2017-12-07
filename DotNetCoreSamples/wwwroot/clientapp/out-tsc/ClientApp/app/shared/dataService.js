@@ -45,7 +45,7 @@ var DataService = (function () {
     };
     DataService.prototype.checkout = function () {
         var _this = this;
-        // sipariş no biz veriyordu sunucu taraflı bir hata vermemesi için sipariş noyu gönderdim.
+        // sipariş no biz veriyorduk. sunucu taraflı bir hata vermemesi için siparişno oluşturup gönderdim.
         if (!this.order.orderNumber) {
             this.order.orderNumber = this.order.orderDate.getFullYear().toString() + this.order.orderDate.getTime().toString();
         }
